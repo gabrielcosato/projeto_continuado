@@ -9,7 +9,7 @@ const controllerComentario = require('../controllers/controllerComentario');
 
 
 route.get("/home", function (req, res) {
-    //if (req.cookies.userData) {
+    //if (req.cookies.userData)  alooo{
     if (req.session.login) {
         res.render('home')
     }
