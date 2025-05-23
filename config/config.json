@@ -1,0 +1,24 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "postgres",
+    "database": "sitecursos",
+    "host": "localhost",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "postgres",
+    "password": "1234",
+    "database": "web2_db_test",
+    "host": "localhost",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "postgres",
+    "password": "1234",
+    "database": "web2_db_production",
+    "host": "localhost",
+    "dialect": "postgres",
+    "use_env_variable": "DATABASE_URL" 
+  }
+}

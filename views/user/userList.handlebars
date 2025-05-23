@@ -1,0 +1,22 @@
+<table border="1px">
+    <tr>
+        <td> Id </td>
+        <td> Name </td>
+        <td> Email </td>
+        <td> Password</td>
+        <td> Role</td>
+        <td> Editar </td>
+        <td> Deletar </td>
+    </tr>
+    {{#each users}}
+    <tr>
+        <td>{{id}}</td>
+        <td>{{name}}</td>
+        <td>{{email}}</td>
+        <td>{{password}}</td>
+        <td>{{role}}</td>
+        <td><a href="telaUpdateUser/{{id}}">Editar</a></td>
+        <td><a href="users/delete/{{id}}">Deletar</a></td>
+    </tr>
+    {{/each}}
+</table>

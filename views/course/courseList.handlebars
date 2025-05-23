@@ -1,0 +1,22 @@
+<table border="1px">
+    <tr>
+        <td> Title </td>
+        <td> Description </td>
+        <td> Category </td>
+        <td> Owner id </td>
+        <td> Status </td>
+        <td> Editar </td>
+        <td> Deletar </td>
+    </tr>
+    {{#each courses}}
+    <tr>
+        <td>{{title}}</td>
+        <td>{{description}}</td>
+        <td>{{category}}</td>
+        <td>{{owner_id}}</td>
+        <td>{{status}}</td>
+        <td><a href="telaUpdateCourse/{{id}}">Editar</a></td>
+        <td><a href="courses/delete/{{id}}">Deletar</a></td>
+    </tr>
+    {{/each}}
+</table>

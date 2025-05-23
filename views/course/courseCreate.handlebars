@@ -1,0 +1,24 @@
+<form action="/createCourse" method="post">
+    Title: <input type="text" name="title">
+    <br> <br> 
+    Description: <input type="text" name="description">
+    <br> <br>
+    Category: <input type="text" name="category">
+    <br> <br>
+
+    Usuario criador:
+     <select name="owner_id">
+        {{#each users}}
+        <tr>
+            <option value={{id}}>{{id}} - {{name}} - {{role}}</option>
+        </tr>
+        {{/each}}
+    </select>
+    <br> <br>
+
+    Status: <input type="text" name="status">
+    <br> <br>
+
+    <input type="submit" value="Cadastrar Curso">
+        
+</form>

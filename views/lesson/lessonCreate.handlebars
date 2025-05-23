@@ -1,0 +1,21 @@
+<form action="/createLesson" method="post">
+    Title: <input type="text" name="title">
+    <br> <br> 
+    Duration min: <input type="number" name="duration_min">
+    <br> <br>
+    Position: <input type="number" name="position">
+    <br> <br>
+
+    Curso associado:
+     <select name="course_id">
+        {{#each courses}}
+        <tr>
+            <option value={{id}}>{{id}} - {{title}}</option>
+        </tr>
+        {{/each}}
+    </select>
+    <br> <br>
+
+    <input type="submit" value="Cadastrar Lição">
+        
+</form>

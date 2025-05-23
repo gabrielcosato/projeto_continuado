@@ -1,0 +1,19 @@
+<form action="/lessons/update" method="post">
+    <input type="hidden" name="id" value={{lesson.id}}>
+    Title: <input type="text" name="title"  value="{{lesson.title}}">
+    <br> <br>
+    Duration min: <input type="number" name="duration_min"  value="{{lesson.duration_min}}">
+    <br> <br>
+    Position: <input type="number" name="position" value="{{lesson.position}}">
+    <br> <br>
+    Cursos associados:
+    <select name="course_id">
+        {{#each courses}}
+        <tr>
+            <option value={{id}}>{{id}} - {{title}}</option>
+        </tr>
+        {{/each}}
+    </select>
+    <br> <br>
+    <input type="submit" value="Editar">
+</form>

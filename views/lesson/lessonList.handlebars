@@ -1,0 +1,20 @@
+<table border="1px">
+    <tr>
+        <td> Title </td>
+        <td> Duration min </td>
+        <td> position </td>
+        <td> Course id </td>
+        <td> Editar </td>
+        <td> Deletar </td>
+    </tr>
+    {{#each lessons}}
+    <tr>
+        <td>{{title}}</td>
+        <td>{{duration_min}}</td>
+        <td>{{position}}</td>
+        <td>{{course_id}}</td>
+        <td><a href="telaUpdateLesson/{{id}}">Editar</a></td>
+        <td><a href="lessons/delete/{{id}}">Deletar</a></td>
+    </tr>
+    {{/each}}
+</table>
