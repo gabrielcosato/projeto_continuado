@@ -1,22 +1,30 @@
-<table border="1px">
-    <tr>
-        <td> Id </td>
-        <td> Name </td>
-        <td> Email </td>
-        <td> Password</td>
-        <td> Role</td>
-        <td> Editar </td>
-        <td> Deletar </td>
-    </tr>
-    {{#each users}}
-    <tr>
-        <td>{{id}}</td>
-        <td>{{name}}</td>
-        <td>{{email}}</td>
-        <td>{{password}}</td>
-        <td>{{role}}</td>
-        <td><a href="telaUpdateUser/{{id}}">Editar</a></td>
-        <td><a href="users/delete/{{id}}">Deletar</a></td>
-    </tr>
-    {{/each}}
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col"> Id </th>
+            <th scope="col"> Name </th>
+            <th scope="col"> Email </th>
+            <th scope="col"> Password</th>
+            <th scope="col"> Role</th>
+            {{#if admin}}
+            <th scope="col"> Editar </th>
+            <th scope="col"> Deletar </th>
+            {{/if}}
+        </tr>
+    </thead>
+    <tbody>
+        {{#each users}}
+        <tr>
+            <th>{{id}}</th>
+            <th>{{name}}</th>
+            <th>{{email}}</th>
+            <th>{{password}}</th>
+            <th>{{role}}</th>
+            {{#if ../admin}}
+            <td><a href="telaUpdateUser/{{id}}">Editar</a></td>
+            <td><a href="users/delete/{{id}}">Deletar</a></td>
+            {{/if}}
+        </tr>
+        {{/each}}
+    </tbody>
 </table>

@@ -1,12 +1,29 @@
 <form action="/cadastro2" method="post">
-    Name: <input type="text" name="name">
-    <br> <br> 
-    Email: <input type="text" name="email">
-    <br> <br>
-    Password: <input type="password" name="password">
-    <br> <br>
-    Role: <input type="text" name="role">
-    <br> <br>
-    <input type="submit" value="Cadastrar">
+
+    <div class="form-group">
+        <label for="inputName">Name</label>
+        <input type="text" class="form-control" id="inputName" name="name">
+        <br>
+    </div>
+
+    <div class="form-group">
+        <label for="inputEmail">Email</label> 
+        <input type="text" class="form-control" id="inputEmail" name="email">
+        <br>
+    </div>
+
+    <div class="form-group">
+        <label for="inputPassword">Password</label>  
+        <input type="password" class="form-control" id="inputPassword" name="password">
+        <br>
+    </div>
+
+    <div class="form-group">
+        <label for="inputRole">Role</label>   
+        <input type="text" class="form-control" id="inputRole" name="role">
+        <br>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Cadastrar</button>
         
 </form>

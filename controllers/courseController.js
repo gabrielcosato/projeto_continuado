@@ -1,5 +1,6 @@
 const db = require("../config/db_sequelize");
 const { course: Course, user: User, lesson: Lesson } = db;
+const path = require('path');
 
 module.exports = {
 
@@ -18,15 +19,16 @@ module.exports = {
     async createCourse(req, res) {
         try {
            
-            const { title, description, category, owner_id, status } = req.body;
-
+            const { title, description, category, owner_id, status} = req.body;
+            const imagem = req.imageName;
+        
             const owner = await User.findByPk(owner_id, {
                 attributes: ["id" , "name" , "role",]
             });
 
             console.log(owner.role);
 
-            if (!owner || owner.role !== "professor") {
+            if (!owner || owner.role == "aluno") {
                 console.log("criador precisa ser professor para criar curso");
                 return res.status(404).send("CRIADOR NAO PODE SER ALUNO!");
             }
@@ -35,7 +37,8 @@ module.exports = {
                 description,
                 category,
                 owner_id,
-                status
+                status,
+                imagem
             });
 
             console.log("Criou o curso!");
@@ -50,7 +53,7 @@ module.exports = {
         try {
 
             const courses = await Course.findAll({
-                attributes: ["id", "title", "description","category", "owner_id", "status"]
+                attributes: ["id", "title", "description","category", "owner_id", "imagem", "status"]
             });
             res.render("course/courseList", { courses: courses.map( course => course.toJSON()) });
             
@@ -63,7 +66,7 @@ module.exports = {
         try {
             const courseId = req.params.id;
             const course = await Course.findByPk(courseId, {
-                attributes: ["title" , "description" , "category" , "owner_id", "status", "createdAt" ]
+                attributes: ["title" , "description" , "category" , "owner_id", "status", "imagem", "createdAt" ]
             });
             if (course) {
                 console.log("achou o curso");
@@ -96,14 +99,11 @@ module.exports = {
         try {
      
             const { id, title, description, category, owner_id, status } = req.body;
+            const imagem = req.imageName;
 
             const owner = await User.findByPk(owner_id);
-            if (!owner || owner.role != "professor") {
-                console.log("criador precisa ser professor para criar curso");
-                return res.status(404).send("CRIADOR NAO PODE SER ALUNO!");
-            }
-
-            const course = await Course.findByPk(id);
+             const course = await Course.findByPk(id);
+           
             if (!course) {
                 console.log("não achou o curso!");
             }
@@ -113,6 +113,7 @@ module.exports = {
             course.category = category || course.category;
             course.status = status || course.status;
             course.owner_id = owner_id || course.ownew_id;
+            course.imagem = imagem || course.imagem;
 
             await course.save();
             console.log("EDITOU O CURSO!");

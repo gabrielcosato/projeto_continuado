@@ -1,11 +1,38 @@
-<form action="/courses/update" method="post">
+<form action="/courses/update" method="post" enctype="multipart/form-data">
     <input type="hidden" name="id" value={{course.id}}>
-    Title: <input type="text" name="title" value="{{course.title}}">
+    {{!-- Title: <input type="text" name="title" value="{{course.title}}">
     <br> <br> 
     Description: <input type="text" name="description" value="{{course.description}}">
     <br> <br>
     Category: <input type="text" name="category" value="{{course.category}}">
     <br> <br>
+    Image: <input type="file" id="inputImagem" name="imagem" value="{{course.imagem}}"> --}}
+
+     <div class="form-group">
+        <label for="inputTitle">Title</label>
+        <input type="text" class="form-control" id="inputTitle" name="title" value="{{course.title}}">
+    </div>
+
+    <div class="form-group">
+        <label for="inputDescription">Description</label>
+        <input type="text" class="form-control" id="inputDescription" name="description" value="{{course.description}}">
+    </div>
+
+    <div class="form-group">
+        <label for="inputCategory">Category</label>
+        <input type="text" class="form-control" id="inputCategory" name="category" value="{{course.category}}">
+
+    </div>
+
+    <div class="form-group">
+        <label for="inputStatus">Status</label>
+        <input type="text" class="form-control" id="inputStatus" name="status" value="{{course.status}}">
+    </div>
+
+    <div class="form-group">
+        <label for="inputImagem" >Imagem</label>
+        <input type="file" class="form-control" id="inputImagem" name="imagem" value="{{course.imagem}}">
+    </div>
 
     Usuario criador:
      <select name="owner_id">
@@ -17,8 +44,8 @@
     </select>
     <br> <br>
 
-    Status: <input type="text" name="status" value="{{course.status}}">
-    <br> <br>
+    {{!-- Status: <input type="text" name="status" value="{{course.status}}">
+    <br> <br> --}}
 
     <input type="submit" value="Editar">
         

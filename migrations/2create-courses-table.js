@@ -20,6 +20,9 @@ module.exports = {
       category: {
         type: Sequelize.STRING
       },
+      imagem: {
+            type: Sequelize.STRING, allowNull: true
+      },
       owner_id: {
         type: Sequelize.INTEGER,
         allowNull: false,

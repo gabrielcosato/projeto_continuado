@@ -1,13 +1,36 @@
-<form action="/createCourse" method="post">
-    Title: <input type="text" name="title">
-    <br> <br> 
-    Description: <input type="text" name="description">
-    <br> <br>
-    Category: <input type="text" name="category">
-    <br> <br>
+<form action="/createCourse" method="post" enctype="multipart/form-data">
+
+    <div class="form-group">
+        <label for="inputTitle">Title</label>
+        <input type="text" class="form-control" id="inputTitle" name="title">
+
+    </div>
+
+    <div class="form-group">
+        <label for="inputDescription">Description</label>
+        <input type="text" class="form-control" id="inputDescription" name="description">
+
+    </div>
+
+    <div class="form-group">
+        <label for="inputCategory">Category</label>
+        <input type="text" class="form-control" id="inputCategory" name="category">
+
+    </div>
+
+    <div class="form-group">
+        <label for="inputStatus">Status</label>
+        <input type="text" class="form-control" id="inputStatus" name="status">
+
+    </div>
+
+    <div class="form-group">
+        <label for="inputImagem">Imagem</label>
+        <input type="file" class="form-control" id="inputImagem" name="imagem">
+    </div>
 
     Usuario criador:
-     <select name="owner_id">
+    <select name="owner_id">
         {{#each users}}
         <tr>
             <option value={{id}}>{{id}} - {{name}} - {{role}}</option>
@@ -16,9 +39,7 @@
     </select>
     <br> <br>
 
-    Status: <input type="text" name="status">
-    <br> <br>
 
-    <input type="submit" value="Cadastrar Curso">
-        
+    <button type="submit" class="btn btn-primary">Cadastrar Curso</button>
+     
 </form>

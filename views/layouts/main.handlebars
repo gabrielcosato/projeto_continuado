@@ -4,20 +4,80 @@
 
 <head>​
     <title>Sistema de Cursos</title>​
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>​
 </head>​
 
 <body>​
     <center> ​
         <h1> Sistema de Cursos </h1>​
-        <a href="/cadastro"> <button> Cadastrar Usuário</button> </a> ​
-        <a href="/users"> <button> Listar Usuários</button> </a>​
-        <a href="/cadastroLicao"> <button> Cadastrar Licao</button> </a> ​
-        <a href="/lessons"> <button> Listar Licoes</button> </a>​
-        <a href="/cadastroCurso"> <button> Cadastrar Curso</button> </a> ​
-        <a href="/courses"> <button> Listar Cursos</button> </a>​
-        <a href="/comentarioCreate"> <button> Cadastrar Comentário</button> </a> ​
-        <a href="/comentarioList"> <button> Listar Comentários</button> </a>​
-        <a href="/logout"> <button> Logout</button> </a>​
+        ​<label>Usuário Logado: {{login}}</label>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/home">Home <span class="sr-only"></span></a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Usuários
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {{#if admin}}
+                            <a class="dropdown-item" href="/cadastro">Criar</a>
+                            {{/if}}
+                            <a class="dropdown-item" href="/users">Listar</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Cursos
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {{#if admin}}
+                            <a class="dropdown-item" href="/cadastroCurso">Criar</a>
+                            {{/if}}
+                            <a class="dropdown-item" href="/courses">Listar</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Lições
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {{#if admin}}
+                            <a class="dropdown-item" href="/cadastroLicao">Criar</a>
+                            {{/if}}<a class="dropdown-item" href="/lessons">Listar</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Comentários
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {{#if admin}}
+                            <a class="dropdown-item" href="/comentarioCreate">Criar</a>
+                            {{/if}}
+                            <a class="dropdown-item" href="/comentarioList">Listar</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>​
         <br> <br>​
         {{{body}}}​
     </center>​

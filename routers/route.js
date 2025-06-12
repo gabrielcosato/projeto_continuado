@@ -1,4 +1,5 @@
 const express = require("express");
+const db = require('../config/db_sequelize');
 const route = express.Router();
 const userController = require("../controllers/userController.js");
 const courseController = require("../controllers/courseController.js");
@@ -7,6 +8,9 @@ const lessonController = require("../controllers/lessonController.js");
 const controllerComentario = require('../controllers/controllerComentario');
 //const evaluationController = require("../controllers/evaluationController.js");
 
+// db.sequelize.sync({force: true}).then(() => {
+//     console.log('{ force: true }');
+// });
 
 route.get("/home", function (req, res) {
     //if (req.cookies.userData)  alooo{
@@ -16,6 +20,19 @@ route.get("/home", function (req, res) {
     else
         res.redirect('/'); 
 });
+
+const multer = require('multer');
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "public/uploads/");
+    },
+    filename: (req, file, cb) => {
+        req.imageName = req.body.title + '.png'
+        cb(null, req.imageName)
+    },
+})
+const upload = multer({ storage: storage });
 
 //User
 route.get("/", userController.getLogin); 
@@ -31,11 +48,11 @@ route.get("/users/delete/:id", userController.deleteUser);
 
 //Course
 route.get("/cadastroCurso", courseController.getCreate); 
-route.post("/createCourse", courseController.createCourse);
+route.post("/createCourse", upload.single('imagem'), courseController.createCourse);
 route.get("/courses", courseController.getAllCourses);
 route.get("/courses/:id", courseController.getCourseById);
 route.get("/telaUpdateCourse/:id", courseController.getUpdate);
-route.post("/courses/update", courseController.updateCourse);
+route.post("/courses/update", upload.single('imagem'), courseController.updateCourse);
 route.get("/courses/delete/:id", courseController.deleteCourse);
 
 

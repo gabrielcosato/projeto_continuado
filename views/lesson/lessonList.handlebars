@@ -1,20 +1,29 @@
-<table border="1px">
-    <tr>
-        <td> Title </td>
-        <td> Duration min </td>
-        <td> position </td>
-        <td> Course id </td>
-        <td> Editar </td>
-        <td> Deletar </td>
-    </tr>
-    {{#each lessons}}
-    <tr>
-        <td>{{title}}</td>
-        <td>{{duration_min}}</td>
-        <td>{{position}}</td>
-        <td>{{course_id}}</td>
-        <td><a href="telaUpdateLesson/{{id}}">Editar</a></td>
-        <td><a href="lessons/delete/{{id}}">Deletar</a></td>
-    </tr>
-    {{/each}}
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col"> Title </th>
+            <th scope="col"> Duration min </th>
+            <th scope="col"> position </th>
+            <th scope="col"> Course id </th>
+            {{#if admin}}
+            <th scope="col"> Editar </th>
+            <th scope="col"> Deletar </th>
+            {{/if}}
+        </tr>
+    </thead>
+    <tbody>
+        {{#each lessons}}
+        <tr>
+            <th scope="row">{{title}}</th>
+            <th scope="row">{{duration_min}}</th>
+            <th scope="row">{{position}}</th>
+            <th scope="row">{{course_id}}</th>
+            {{#if ../admin}}
+            <td><a href="telaUpdateLesson/{{id}}">Editar</a></td>
+            <td><a href="lessons/delete/{{id}}">Deletar</a></td>
+            {{/if}}
+        </tr>
+        {{/each}}
+    </tbody>
+
 </table>

@@ -9,18 +9,28 @@ module.exports = {
     },
 
     async postLogin(req, res) {
+
         const users = await User.findAll({
-            attributes: ["email", "password"],
-            where: { password: req.body.password }
+            attributes: ["email","password","role"],
+            where: { email: req.body.email, password: req.body.password }
         }).then(users => {
             if (users.length > 0) {
                 //res . cookie (" userData ", user, { maxAge:30 *60*1000 , httpOnly:true });
-                req.session.login = req.body.login;
+                req.session.login = req.body.email;
+                res.locals.login = req.body.email;
+
+                const role = users[0].dataValues.role;
+                req.session.role = role; // Armazena na sessão
+
+                if (role === 'admin') {
+                    res.locals.admin = true;
+                }
+
                 console.log("ALO MEU POVO");
                 res.render('home');
             } else
                 res.redirect('/');
-                
+
         }).catch((err) => {
             console.log(err);
         });
@@ -108,7 +118,7 @@ module.exports = {
 
             await user.save();
             console.log("EDITOU O USUARIO!");
-            
+
             res.redirect('/home');
         } catch (err) {
             console.error("Error updating user:", err);

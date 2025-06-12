@@ -1,10 +1,22 @@
 <form action="/createLesson" method="post">
-    Title: <input type="text" name="title">
-    <br> <br> 
-    Duration min: <input type="number" name="duration_min">
-    <br> <br>
-    Position: <input type="number" name="position">
-    <br> <br>
+
+    <div class="form-group">
+        <label for="inputTitle">Title</label>
+        <input type="text" class="form-control" id="inputTitle" name="title">
+        <br> 
+    </div>
+
+    <div class="form-group">
+        <label for="inputDuration">Duration min</label>
+        <input type="number" class="form-control" id="inputDuration" name="duration_min">
+        <br>
+    </div>
+
+    <div class="form-group">
+        <label for="inputPosition">Positon</label>
+        <input type="number" class="form-control" id="inputPosition" name="position">
+        <br>
+    </div>
 
     Curso associado:
      <select name="course_id">
@@ -16,6 +28,6 @@
     </select>
     <br> <br>
 
-    <input type="submit" value="Cadastrar Lição">
+    <button type="submit" class="btn btn-primary">Cadastrar Lição</button>
         
 </form>
