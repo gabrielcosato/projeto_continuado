@@ -10,7 +10,7 @@ mongoose.connect(db_mongoose.connection).then(() => {
 
 module.exports = {
     async getCreate(req, res) {
-        res.render('comentario/comentarioCreate');
+        
     },
     async postCreate(req, res) {
         new Comentario({
@@ -25,7 +25,7 @@ module.exports = {
     },
     async getList(req, res) {
         await Comentario.find().then(comentarios => {
-            res.render('comentario/comentarioList', { comentarios: comentarios.map(comentario => comentario.toJSON()) });
+            
         }).catch((err) => {
             console.log(err);
         });

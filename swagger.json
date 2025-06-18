@@ -1,0 +1,464 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API-Courses",
+        "description": "API para persistencia de cursos.",
+        "contact": {
+            "email": "gabrielcosato@alunos.utfpr.edu.br",
+            "name": "Gabriel Morais Jatobá Cosato"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8081",
+            "description": "Servidor Local"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "security": [
+        {
+            "bearerAuth": []
+        }
+    ],
+    "paths": {
+        "/api/login": {
+            "post": {
+                "summary": "Autenticar user",
+                "tags": [
+                    "Autenticação"
+                ],
+                "security": [],
+                "requestBody": {
+                    "description": "Credenciais do user",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "login": {
+                                        "type": "string"
+                                    },
+                                    "senha": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": ["login", "senha"]
+                            },
+                            "example": {
+                                "login": "admin",
+                                "senha": "1234"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Autenticação bem-sucedida",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Senha incorreta"
+                    },
+                    "404": {
+                        "description": "User não encontrado"
+                    },
+                    "500": {
+                        "description": "Erro ao fazer login"
+                    }
+                }
+            }
+        },
+        "/api/users": {
+            "get": {
+                "summary": "Obter todos os users",
+                "tags": [
+                    "Users"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de users",
+                        "content": {
+                            "application/json": {
+                                "example": [
+                                    {
+                                        "id": 1,
+                                        "nome": "Administrador",
+                                        "login": "admin",
+                                        "senha": "1234",
+                                        "tipo": 1,
+                                        "createdAt": "2025-06-13T21:13:37.274Z",
+                                        "updatedAt": "2025-06-13T21:13:37.274Z"
+                                    },
+                                    {
+                                        "id": 2,
+                                        "nome": "Aluno de tal",
+                                        "login": "aluno",
+                                        "senha": "123456",
+                                        "tipo": 2,
+                                        "createdAt": "2025-05-13T21:13:37.274Z",
+                                        "updatedAt": "2025-05-13T21:13:37.274Z"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Criar um novo user",
+                "tags": [
+                    "Users"
+                ],
+                "requestBody": {
+                    "description": "Novo user",
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "nome": "Administrador",
+                                "login": "admin",
+                                "senha": "1234",
+                                "tipo": 1
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User criado com sucesso",
+                        "tags": [
+                            "Users"
+                        ],
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": 2,
+                                    "nome": "Aluno de tal",
+                                    "login": "aluno",
+                                    "senha": "123456",
+                                    "tipo": 2,
+                                    "updatedAt": "2025-06-13T21:33:34.819Z",
+                                    "createdAt": "2025-06-13T21:33:34.819Z"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                }
+            ],
+            "get": {
+                "summary": "Obter um user por ID",
+                "tags": [
+                    "Users"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User encontrado",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": 1,
+                                    "nome": "Administrador",
+                                    "login": "admin",
+                                    "senha": "1234",
+                                    "tipo": 1,
+                                    "createdAt": "2025-06-13T21:13:37.274Z",
+                                    "updatedAt": "2025-06-13T21:13:37.274Z"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User não encontrado"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Atualizar um user por ID",
+                "requestBody": {
+                    "description": "User atualizado",
+                    "content": {
+                        "application/json": {
+                            "example": {
+                                "nome": "Aluno de tal",
+                                "login": "alunoAlterado",
+                                "senha": "123456",
+                                "tipo": 2
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User atualizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": 2,
+                                    "nome": "Aluno de tal",
+                                    "login": "alunoAlterado",
+                                    "senha": "123456",
+                                    "tipo": 2,
+                                    "updatedAt": "2025-07-13T21:33:34.819Z",
+                                    "createdAt": "2025-06-13T21:33:34.819Z"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User não encontrado"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Excluir um user por ID",
+                "responses": {
+                    "204": {
+                        "description": "User excluído com sucesso"
+                    },
+                    "404": {
+                        "description": "User não encontrado"
+                    }
+                }
+            }
+        },
+        "/api/courses": {
+            "get": {
+                "summary": "Obter todos os courses",
+                "tags": [
+                    "Courses"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de courses",
+                        "content": {
+                            "application/json": {
+                                "example": [
+                                    {
+                                        "id": 1,
+                                        "nome": "Bolo de Chocolate",
+                                        "ingredientes": "Farinha, açúcar, chocolate",
+                                        "preparo": "Misture tudo e asse",
+                                        "categoriaId": 1
+                                    },
+                                    {
+                                        "id": 2,
+                                        "nome": "Torta de Frango",
+                                        "ingredientes": "Frango, massa, temperos",
+                                        "preparo": "Prepare o recheio e asse",
+                                        "categoriaId": 2
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro ao listar receitas"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Criar uma nova receita",
+                "tags": [
+                    "Receitas"
+                ],
+                "requestBody": {
+                    "description": "Dados da nova receita",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nome": {
+                                        "type": "string"
+                                    },
+                                    "ingredientes": {
+                                        "type": "string"
+                                    },
+                                    "preparo": {
+                                        "type": "string"
+                                    },
+                                    "categoriaId": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "required": ["nome", "ingredientes", "preparo", "categoriaId"]
+                            },
+                            "example": {
+                                "nome": "Nova Receita",
+                                "ingredientes": "Ingrediente 1, Ingrediente 2",
+                                "preparo": "Instruções de preparo",
+                                "categoriaId": 1
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Receita criada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": 3,
+                                    "nome": "Nova Receita",
+                                    "ingredientes": "Ingrediente 1, Ingrediente 2",
+                                    "preparo": "Instruções de preparo",
+                                    "categoriaId": 1
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro ao criar receita"
+                    }
+                }
+            }
+        },
+        "/receitas/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                }
+            ],
+            "get": {
+                "summary": "Obter uma receita por ID",
+                "tags": [
+                    "Receitas"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Receita encontrada",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": 1,
+                                    "nome": "Bolo de Chocolate",
+                                    "ingredientes": "Farinha, açúcar, chocolate",
+                                    "preparo": "Misture tudo e asse",
+                                    "categoriaId": 1
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Receita não encontrada"
+                    },
+                    "500": {
+                        "description": "Erro ao obter receita"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Atualizar uma receita por ID",
+                "tags": [
+                    "Receitas"
+                ],
+                "requestBody": {
+                    "description": "Dados atualizados da receita",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nome": {
+                                        "type": "string"
+                                    },
+                                    "ingredientes": {
+                                        "type": "string"
+                                    },
+                                    "preparo": {
+                                        "type": "string"
+                                    },
+                                    "categoriaId": {
+                                        "type": "integer"
+                                    }
+                                }
+                            },
+                            "example": {
+                                "nome": "Bolo de Chocolate Atualizado",
+                                "ingredientes": "Farinha, açúcar, chocolate, leite",
+                                "preparo": "Misture tudo e asse por 40 minutos",
+                                "categoriaId": 1
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Receita atualizada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "id": 1,
+                                    "nome": "Bolo de Chocolate Atualizado",
+                                    "ingredientes": "Farinha, açúcar, chocolate, leite",
+                                    "preparo": "Misture tudo e asse por 40 minutos",
+                                    "categoriaId": 1
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Receita não encontrada"
+                    },
+                    "500": {
+                        "description": "Erro ao atualizar receita"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Excluir uma receita por ID",
+                "tags": [
+                    "Receitas"
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Receita excluída com sucesso"
+                    },
+                    "404": {
+                        "description": "Receita não encontrada"
+                    },
+                    "500": {
+                        "description": "Erro ao deletar receita"
+                    }
+                }
+            }
+        }
+    }
+}

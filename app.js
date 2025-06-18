@@ -1,33 +1,25 @@
-
+const express = require('express');
 const routes = require('./routers/route');
-const handlebars = require('express-handlebars');
-const express = require('express');
-//var cookieParser = require('cookie-parser');
-var session = require('express-session');
-const middlewares = require('./middlewares/middlewares');
-const app = express();
-const path = require('path');
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({secret:'textosecreto$asdfasdfaswwww',
-        cookie:{maxAge: 30*60*1000}}));
-//app.use(cookieParser());
-
-
-app.engine('handlebars', handlebars.engine({defaultLayout:'main'}));
-app.set('view engine','handlebars');
+const app = express();
+const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
+const secretKey = 'your_secret_key';
+const swaggerUI = require ('swagger-ui-express');
+const swaggerDocument = require ('./swagger.json');
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use("/api-docs",swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
-app.use(middlewares.logRegister,middlewares.sessionControl)
-app.use(routes);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use('/api', routes); // Prefixo para as rotas da API
 
 app.use(
-    express.urlencoded({
-      extended: true
-    })
+    express.urlencoded({
+      extended: true
+    })
 )
 
-app.listen(8081, function(){
-        console.log("Servidor no http://localhost:8081")
+app.listen(8081, function(){
+        console.log("Servidor no http://localhost:8081")
 });

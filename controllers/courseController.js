@@ -1,146 +1,66 @@
-const db = require("../config/db_sequelize");
-const { course: Course, user: User, lesson: Lesson } = db;
-const path = require('path');
+const db = require('../config/db_sequelize');
 
 module.exports = {
-
-     async getCreate(req, res) {
-        const users = await User.findAll({
-                attributes: ["id", "name", "role"]
-        });
-
-        
-        res.render("course/courseCreate", {
-                users: users.map(user => user.toJSON())
-        });;  
-    },
-    
-    
-    async createCourse(req, res) {
+    async postCourse(req, res) {
         try {
-           
-            const { title, description, category, owner_id, status} = req.body;
-            const imagem = req.imageName;
-        
-            const owner = await User.findByPk(owner_id, {
-                attributes: ["id" , "name" , "role",]
-            });
-
-            console.log(owner.role);
-
-            if (!owner || owner.role == "aluno") {
-                console.log("criador precisa ser professor para criar curso");
-                return res.status(404).send("CRIADOR NAO PODE SER ALUNO!");
-            }
-            const newCourse = await Course.create({
-                title,
-                description,
-                category,
-                owner_id,
-                status,
-                imagem
-            });
-
-            console.log("Criou o curso!");
-            res.redirect("/home");
+            const course = await db.Course.create(req.body);
+            res.status(201).json(course);
         } catch (err) {
-            console.error("Error creating course:", err);
+            console.error(err);
+            res.status(500).json({ error: 'Erro ao criar a course' });
         }
     },
-
-    
-    async getAllCourses(req, res) {
+    async getCourses(req, res) {
         try {
-
-            const courses = await Course.findAll({
-                attributes: ["id", "title", "description","category", "owner_id", "imagem", "status"]
-            });
-            res.render("course/courseList", { courses: courses.map( course => course.toJSON()) });
-            
+            const courses = await db.Course.findAll();
+            res.status(200).json(courses);
         } catch (err) {
-            console.error("Error fetching courses:", err);
+            console.error(err);
+            res.status(500).json({ error: 'Erro ao listar courses' });
         }
     },
-
     async getCourseById(req, res) {
         try {
-            const courseId = req.params.id;
-            const course = await Course.findByPk(courseId, {
-                attributes: ["title" , "description" , "category" , "owner_id", "status", "imagem", "createdAt" ]
-            });
-            if (course) {
-                console.log("achou o curso");
+            const course = await db.Course.findByPk(req.params.id);
+            if (user) {
+                res.status(200).json(course);
             } else {
-                console.log("não achou o curso!");
+                res.status(404).json({ error: 'Course não encontrado' });
             }
         } catch (err) {
-            console.error("Error fetching course by ID:", err);
+            console.error(err);
+            res.status(500).json({ error: 'Erro ao obter course' });
         }
     },
-
-    async getUpdate(req, res) {
-        const { title, course_id, duration_min, position } = req.body;
-
-        const users = await User.findAll({
-                attributes: ["id", "name", "role"]
-            });
-
-        const course = await Course.findByPk(req.params.id).then(
-            course => res.render('course/courseUpdate', {
-                course: course.dataValues, 
-                users: users.map(user => user.toJSON())
-            })
-        ).catch(function (err) {
-            console.log(err);
-        });
-    },
-
-    async updateCourse(req, res) {
+    async putCourse(req, res) {
         try {
-     
-            const { id, title, description, category, owner_id, status } = req.body;
-            const imagem = req.imageName;
-
-            const owner = await User.findByPk(owner_id);
-             const course = await Course.findByPk(id);
-           
-            if (!course) {
-                console.log("não achou o curso!");
+            const [updated] = await db.Course.update(req.body, {
+                where: { id: req.params.id }
+            });
+            if (updated) {
+                const updatedCourse = await db.Course.findByPk(req.params.id);
+                res.status(200).json(updatedCourse);
+            } else {
+                res.status(404).json({ error: 'Course não encontrado' });
             }
-
-            course.title = title || course.title;
-            course.description = description || course.description;
-            course.category = category || course.category;
-            course.status = status || course.status;
-            course.owner_id = owner_id || course.ownew_id;
-            course.imagem = imagem || course.imagem;
-
-            await course.save();
-            console.log("EDITOU O CURSO!");
-
-            res.redirect('/home');
         } catch (err) {
-            console.error("Error updating course:", err);
+            console.error(err);
+            res.status(500).json({ error: 'Erro ao atualizar course' });
         }
     },
-
     async deleteCourse(req, res) {
         try {
-            const courseId = req.params.id;
-            const course = await Course.findByPk(courseId);
-
-            if (!course) {
-                console.log("não achou o curso!");
+            const deleted = await db.Course.destroy({
+                where: { id: req.params.id }
+            });
+            if (deleted) {
+                res.status(204).json();
+            } else {
+                res.status(404).json({ error: 'Course não encontrado' });
             }
-
-            await Lesson.destroy({ where: { course_id: courseId } });
-            console.log("deletou as lições associadas ao curso!");        
-
-            await course.destroy();
-            console.log("deletou o curso");
-            res.render('home')
         } catch (err) {
-            console.error("Error deleting course:", err);
+            console.error(err);
+            res.status(500).json({ error: 'Erro ao deletar course' });
         }
     }
-};
+}

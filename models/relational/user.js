@@ -6,21 +6,21 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false,
             primaryKey: true
         },
-        name: {
+        nome: {
             type: Sequelize.STRING,
             allowNull: false
         },
-        email: {
+        login: {
             type: Sequelize.STRING,
             allowNull: false,
             unique: true
         },
-        password: {
+        senha: {
             type: Sequelize.STRING,
             allowNull: false
         },
-        role: {
-            type: Sequelize.STRING,
+        tipo: {
+            type: Sequelize.INTEGER,
             allowNull: false
         }
     });
