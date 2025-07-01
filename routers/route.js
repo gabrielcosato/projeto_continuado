@@ -51,6 +51,10 @@ route.delete("/lessons/:id", authenticateToken, lessonController.deleteLesson);
 route.get("/lessons", authenticateToken, lessonController.getLessons);
 route.get("/lessons/:id", authenticateToken, lessonController.getLessonById);
 
+// retorna as lessons de determinado course
+
+route.get("/lessons/courses/:id", authenticateToken, lessonController.getLessonsByCourse);
+
 // Enrollment
 route.post("/enrollments", authenticateToken, enrollmentController.postEnrollment);
 route.put("/enrollments/:id", authenticateToken, enrollmentController.putEnrollment);
@@ -69,8 +73,8 @@ route.get("/evaluations/:id", authenticateToken, evaluationController.getEvaluat
 
 
 //Controller Comentario
-// route.get("/comentarioCreate", controllerComentario.getCreate);
-// route.post("/comentarioCreate", controllerComentario.postCreate);
-// route.get("/comentarioList", controllerComentario.getList);
+route.get("/comentarioCreate", controllerComentario.getCreate);
+route.post("/comentarioCreate", controllerComentario.postCreate);
+route.get("/comentarioList", controllerComentario.getList);
 
 module.exports = route;

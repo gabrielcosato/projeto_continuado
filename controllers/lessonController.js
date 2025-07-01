@@ -87,6 +87,26 @@ module.exports = {
         }
     },
 
+    async getLessonsByCourse(req, res) {
+    const courseId = req.params.id;
+    
+    console.log(req.params)
+    try {
+        const lessons = await db.Lesson.findAll({
+            where: { course_id: courseId },
+            order: [['position', 'ASC']], 
+            include: [
+                { model: db.Course, as: 'course' }
+            ]
+        });
+        res.status(200).json(lessons);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Erro ao buscar lessons do curso' });
+    }
+},
+
+
     async getLessonById(req, res) {
         try {
                     const lesson = await db.Lesson.findByPk(req.params.id, {
