@@ -7,6 +7,8 @@ const secretKey = 'your_secret_key';
 const swaggerUI = require ('swagger-ui-express');
 const swaggerDocument = require ('./swagger.json');
 
+require('dotenv').config();
+
 app.use(express.json());
 app.use("/api-docs",swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 

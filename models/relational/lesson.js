@@ -10,6 +10,9 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
             allowNull: false
         },
+        resume: {
+            type: Sequelize.TEXT,
+        },
         course_id: {
             type: Sequelize.INTEGER,
             allowNull: false,
@@ -17,6 +20,12 @@ module.exports = (sequelize, Sequelize) => {
                 model: 'courses',
                 key: 'id'
             }
+        },
+        pdf_url: {
+            type: Sequelize.STRING,
+        },
+        video_url: {
+            type: Sequelize.STRING,
         },
         duration_min: {
             type: Sequelize.INTEGER

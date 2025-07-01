@@ -3,6 +3,14 @@ const db = require('../config/db_sequelize');
 module.exports = {
     async postCourse(req, res) {
         try {
+
+            const { owner_id, title, description, category, imagem, status } = req.body;
+
+            const owner = await db.User.findByPk(owner_id);
+            if (!owner) {
+                return res.status(404).json({ error: "Usuário " + (owner_id) + " não encontrado" });
+            }
+
             const course = await db.Course.create(req.body);
             res.status(201).json(course);
         } catch (err) {
@@ -22,7 +30,7 @@ module.exports = {
     async getCourseById(req, res) {
         try {
             const course = await db.Course.findByPk(req.params.id);
-            if (user) {
+            if (course) {
                 res.status(200).json(course);
             } else {
                 res.status(404).json({ error: 'Course não encontrado' });

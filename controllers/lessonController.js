@@ -1,34 +1,71 @@
 const db = require("../config/db_sequelize");
-const { lesson: Lesson, course: Course } = db;
+
+const cloudinary = require("../cloudinary");
+
 
 module.exports = {
 
-     async getCreate(req, res) {
-        const courses = await Course.findAll({
-                attributes: ["id", "title"]
-            });
+    async getCreate(req, res) {
+        const courses = await db.Course.findAll({
+            attributes: ["id", "title"]
+        });
         res.render("lesson/lessonCreate", {
-                courses: courses.map(course => course.toJSON())
-        });; 
+            courses: courses.map(course => course.toJSON())
+        });;
     },
-    
-    async createLesson(req, res) {
-        try {
-            const { title, course_id, duration_min, position } = req.body;
 
-            
-            const course = await Course.findByPk(course_id);
+    async postLesson(req, res) {
+        try {
+            const { title, resume, course_id, pdf_url, video_url, duration_min, position } = req.body;
+
+
+            const course = await db.Course.findByPk(course_id);
             if (!course) {
                 console.log("nao achou um curso para associar a licao");
                 return res.status(404).send("Course not found. Cannot add lesson to a non-existent course.");
             }
 
-            const newLesson = await Lesson.create({
+            let pdfUrl = null;
+
+            if (req.file) {
+                console.log("Recebendo arquivo para enviar ao Cloudinary...");
+
+                try {
+                    const result = await new Promise((resolve, reject) => {
+                        cloudinary.uploader.upload_stream(
+                            {
+                                resource_type: "raw", // obrigatorio p/ PDF
+                                folder: "pdfs"
+                            },
+                            (err, result) => {
+                                if (err) {
+                                    console.error("Cloudinary upload error:", err);
+                                    reject(err);
+                                } else {
+                                    resolve(result);
+                                }
+                            }
+                        ).end(req.file.buffer);
+                    });
+
+                    pdfUrl = result.secure_url;
+                    console.log("Arquivo PDF enviado para Cloudinary:", pdfUrl);
+                } catch (err) {
+                    console.error("Erro Cloudinary:", err);
+                    return res.status(500).send("Erro ao enviar PDF para o Cloudinary");
+                }
+            }
+
+            const newLesson = await db.Lesson.create({
                 title,
+                resume,
                 course_id,
+                pdf_url: pdfUrl,
+                video_url,
                 duration_min,
                 position
             });
+            return res.status(201).json(newLesson);
             console.log("licao criada com sucesso!");
             res.redirect("/home");
         } catch (err) {
@@ -36,90 +73,141 @@ module.exports = {
         }
     },
 
-    async getAllLessons(req, res) {
+    async getLessons(req, res) {
         try {
-        
-            const lessons = await Lesson.findAll({
-                attributes: ["id", "title", "course_id","duration_min", "position"]
+            const lessons = await db.Lesson.findAll({
+                include: [
+                    { model: db.Course, as: 'course' }
+                ]
             });
-             res.render("lesson/lessonList", { lessons: lessons.map( lesson => lesson.toJSON()) });
+            res.status(200).json(lessons);
         } catch (err) {
-            console.error("Error fetching lessons:", err);
+            console.error(err);
+            res.status(500).json({ error: 'Erro ao listar lessons' });
         }
     },
 
     async getLessonById(req, res) {
         try {
-            const lessonId = req.params.id;
-            const lesson = await Lesson.findByPk(lessonId, {
-                attributes: ["title" , "course_id" , "duration_min", "position"]
-            });
-            if (lesson) {
-                console.log("achou a licao");
-            } else {
-                console.log("não achou a licao!");
-            }
-        } catch (err) {
-            console.error("Error fetching lesson by ID:", err);
-        }
+                    const lesson = await db.Lesson.findByPk(req.params.id, {
+                        include: [
+                            { model: db.Course, as: 'course' }
+                        ]
+                    });
+                    if (lesson) {
+                        res.status(200).json(lesson);
+                    } else {
+                        res.status(404).json({ error: 'Lesson não encontrada' });
+                    }
+                } catch (err) {
+                    console.error(err);
+                    res.status(500).json({ error: 'Erro ao obter lesson' });
+                }
     },
 
     async getUpdate(req, res) {
-            const { title, course_id, duration_min, position } = req.body;
+        const { title, course_id, duration_min, position } = req.body;
 
-            const courses = await Course.findAll({
-                attributes: ["id", "title"]
-            });
+        const courses = await db.Course.findAll({
+            attributes: ["id", "title"]
+        });
 
-            const lesson = await Lesson.findByPk(req.params.id).then(
-                lesson => res.render('lesson/lessonUpdate',
-                    {
-                        lesson: lesson.dataValues,
-                        courses: courses.map(course => course.toJSON())
-                    })
-            ).catch(function (err) {
-                console.log(err);
-            });
-        },
+        const lesson = await db.Lesson.findByPk(req.params.id).then(
+            lesson => res.render('lesson/lessonUpdate',
+                {
+                    lesson: lesson.dataValues,
+                    courses: courses.map(course => course.toJSON())
+                })
+        ).catch(function (err) {
+            console.log(err);
+        });
+    },
 
-    async updateLesson(req, res) {
-        try {
-            
-            const {id, title, course_id, duration_min, position } = req.body;
+    async putLesson(req, res) {
+    try {
+        // 1. Pegar o ID do parâmetro e buscar a lição para garantir que ela existe
+        const { id } = req.params;
+        const lesson = await db.Lesson.findByPk(id);
 
-            const lesson = await Lesson.findByPk(id);
-            if (!lesson) {
-                console.log("não achou a licao!");
+        if (!lesson) {
+            return res.status(404).json({ error: 'Lição não encontrada para o ID fornecido.' });
+        }
+
+        // 2. Preparar os dados de TEXTO para atualização a partir do corpo da requisição
+        const { title, resume, course_id, video_url, duration_min, position } = req.body;
+        const dataToUpdate = {
+            title,
+            resume,
+            course_id,
+            video_url,
+            duration_min,
+            position
+        };
+
+        const course = await db.Course.findByPk(course_id);
+            if (!course) {
+                console.log("nao achou um curso para associar a licao");
+                return res.status(404).send("Course not found. Cannot add lesson to a non-existent course.");
             }
 
-            lesson.title = title || lesson.title;
-            lesson.duration_min = duration_min || lesson.duration_min;
-            lesson.position = position || lesson.position;
-            lesson.course_id = course_id || lesson.course_id;
+        // 3. Verificar se um NOVO ARQUIVO PDF foi enviado na requisição
+        if (req.file) {
+            console.log("Recebendo novo arquivo PDF para atualizar...");
 
-            await lesson.save();
-            console.log("EDITOU A LICAO!");
-            
-            res.redirect('/home');
-        } catch (err) {
-            console.error("Error updating lesson:", err);
+            // Reutilizamos EXATAMENTE a mesma lógica de upload do seu postLesson!
+            try {
+                const result = await new Promise((resolve, reject) => {
+                    cloudinary.uploader.upload_stream(
+                        {
+                            resource_type: "raw",
+                            folder: "pdfs"
+                        },
+                        (err, result) => {
+                            if (err) {
+                                console.error("Cloudinary upload error:", err);
+                                reject(err);
+                            } else {
+                                resolve(result);
+                            }
+                        }
+                    ).end(req.file.buffer);
+                });
+
+                // Adiciona a nova URL do PDF ao nosso objeto de atualização
+                dataToUpdate.pdf_url = result.secure_url;
+                console.log("Novo PDF enviado para Cloudinary:", dataToUpdate.pdf_url);
+
+            } catch (err) {
+                console.error("Erro Cloudinary:", err);
+                return res.status(500).send("Erro ao enviar o novo PDF para o Cloudinary");
+            }
         }
-    },
+
+        // 4. Aplicar as atualizações (texto e/ou PDF) na instância da lição
+        await lesson.update(dataToUpdate);
+
+        // 5. Retornar a lição completa e atualizada
+        return res.status(200).json(lesson);
+
+    } catch (err) {
+        console.error("Error updating lesson:", err);
+        return res.status(500).json({ error: 'Ocorreu um erro interno ao atualizar a lição.' });
+    }
+},
 
     async deleteLesson(req, res) {
         try {
-            const lessonId = req.params.id;
-            const lesson = await Lesson.findByPk(lessonId);
-
-            if (!lesson) {
-                console.log("não achou a licao!");
-            }
-
-            await lesson.destroy();
-            console.log("deletou a licao.");
-            res.render('home')
-        } catch (err) {
-            console.error("Error deleting lesson:", err);
-        }
+                    const deleted = await db.Lesson.destroy({
+                        where: { id: req.params.id }
+                    });
+                    if (deleted) {
+                        res.status(204).json();
+                    } else {
+                        res.status(404).json({ error: 'Lesson não encontrada' });
+                    }
+                } catch (err) {
+                    console.error(err);
+                    res.status(500).json({ error: 'Erro ao deletar lesson' });
+                }
     }
 };
